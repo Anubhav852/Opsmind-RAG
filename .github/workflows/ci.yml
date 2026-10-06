@@ -1,0 +1,33 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env: { POSTGRES_USER: opsmind, POSTGRES_PASSWORD: opsmind, POSTGRES_DB: opsmind }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U opsmind" --health-interval 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    env:
+      DATABASE_URL: postgresql://opsmind:opsmind@localhost:5432/opsmind
+      REDIS_URL: redis://localhost:6379/0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - uses: actions/cache@v4
+        with: { path: ~/.cache/huggingface, key: hf-models-v1 }
+      - run: pip install -e ".[dev]" --extra-index-url https://download.pytorch.org/whl/cpu
+      - run: PGPASSWORD=opsmind psql -h localhost -U opsmind -d opsmind -f sql/001_init.sql
+      - run: ruff check .
+      - run: pytest -q                       # unit + integration (services are up)
+      - name: Retrieval regression gate
+        run: |
+          python -m opsmind.simulator --incidents 80 --out data
+          python -m opsmind.ingestion.load data/events.jsonl --reset
+          python -m evals.run_retrieval --split test --tag ci --gate-recall5 0.50   # set to (your measured value - margin)

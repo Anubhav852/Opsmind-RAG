@@ -1,0 +1,9 @@
+.venv/
+.env
+data/
+models/
+mlruns/
+__pycache__/
+*.pyc
+node_modules/
+evals/results/*.json

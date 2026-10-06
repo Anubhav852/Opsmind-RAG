@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opsmind"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.7",
+  "pydantic-settings>=2.2",
+  "psycopg[binary,pool]>=3.1",
+  "pgvector>=0.3",
+  "numpy",
+  "networkx>=3.2",
+  "sentence-transformers>=3.0",
+  "openai>=1.30",
+  "fastapi>=0.110",
+  "uvicorn[standard]",
+  "pyjwt>=2.8",
+  "redis>=5",
+  "aiokafka>=0.10",
+  "prometheus-fastapi-instrumentator>=7",
+  "prometheus-client",
+  "opentelemetry-sdk",
+  "opentelemetry-exporter-otlp",
+  "opentelemetry-instrumentation-fastapi",
+]
+
+[project.optional-dependencies]
+ml = [
+  "scikit-learn",
+  "mlflow",
+  "faster-whisper",
+  "datasets",
+  "accelerate",
+]
+
+dev = [
+  "pytest",
+  "ruff",
+  "httpx",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+markers = ["integration: needs running Postgres/Redis"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100

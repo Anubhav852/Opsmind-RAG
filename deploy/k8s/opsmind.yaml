@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata: { name: opsmind-config }
+data:
+  DATABASE_URL: "postgresql://opsmind:opsmind@postgres:5432/opsmind"
+  REDIS_URL: "redis://redis:6379/0"
+  LLM_BASE_URL: "http://ollama:11434/v1"
+---
+apiVersion: v1
+kind: Secret
+metadata: { name: opsmind-secrets }
+stringData:
+  JWT_SECRET: "replace-me-in-real-clusters-use-external-secrets"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: opsmind-api }
+spec:
+  replicas: 2
+  strategy: { type: RollingUpdate, rollingUpdate: { maxUnavailable: 0, maxSurge: 1 } }
+  selector: { matchLabels: { app: opsmind-api } }
+  template:
+    metadata: { labels: { app: opsmind-api } }
+    spec:
+      containers:
+        - name: api
+          image: opsmind-api:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8000 }]
+          envFrom:
+            - configMapRef: { name: opsmind-config }
+            - secretRef: { name: opsmind-secrets }
+          resources: { requests: { cpu: 250m, memory: 1Gi }, limits: { cpu: "1", memory: 2Gi } }
+          readinessProbe: { httpGet: { path: /health, port: 8000 }, initialDelaySeconds: 20 }
+          livenessProbe:  { httpGet: { path: /health, port: 8000 }, initialDelaySeconds: 40 }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: opsmind-api }
+spec:
+  selector: { app: opsmind-api }
+  ports: [{ port: 80, targetPort: 8000 }]
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: { name: opsmind-api }
+spec:
+  scaleTargetRef: { apiVersion: apps/v1, kind: Deployment, name: opsmind-api }
+  minReplicas: 2
+  maxReplicas: 6
+  metrics: [{ type: Resource, resource: { name: cpu, target: { type: Utilization, averageUtilization: 70 } } }]
