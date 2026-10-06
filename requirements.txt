@@ -7,3 +7,4 @@ httpx
 pytest
 pytest-asyncio
 ruff
+PyJWT==2.10.1
