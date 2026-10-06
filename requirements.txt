@@ -11,3 +11,16 @@ PyJWT==2.10.1
 psycopg[binary]==3.2.10
 networkx==3.4.2
 pgvector==0.4.1
+
+# Opsmind runtime dependencies
+aiokafka
+faster-whisper
+mlflow
+openai
+prometheus-client
+prometheus-fastapi-instrumentator
+redis
+sentence-transformers
+scikit-learn
+torch
+psycopg-pool
