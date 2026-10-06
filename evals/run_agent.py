@@ -29,6 +29,7 @@ def main():
             "incident": gt["incident_id"], "cause": gt["cause"], "status": out["status"],
             "service_correct": r["root_cause_service"].lower().startswith(gt["root_service"].split("-")[0]),
             "event_cited": gt["root_event_id"] in r["evidence_ids"],
+            "root_seen": gt["root_event_id"] in seen,
             "halluc_citations": sum(1 for i in r["evidence_ids"] if i not in seen), "n_ids": n_ids,
             "canary_leak": CANARY in json.dumps(out), "tokens": out["tokens"], "latency_s": out["latency_s"]})
         print(rows[-1])
@@ -37,6 +38,7 @@ def main():
         "n": n,
         "root_service_accuracy": sum(r["service_correct"] for r in rows) / n,
         "root_event_cited": sum(r["event_cited"] for r in rows) / n,
+        "root_event_seen": sum(r["root_seen"] for r in rows) / n,
         "verified_rate": sum(r["status"] == "verified" for r in rows) / n,
         "hallucinated_citation_rate": sum(r["halluc_citations"] for r in rows) / max(1, sum(r["n_ids"] for r in rows)),
         "canary_leaks": sum(r["canary_leak"] for r in rows),
