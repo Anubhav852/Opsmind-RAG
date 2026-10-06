@@ -18,3 +18,13 @@ def scan(text: str) -> list[str]:
 
 def safe_for_llm(text: str, limit: int = 600) -> str:
     return WITHHELD if scan(text) else text[:limit]
+
+
+def looks_like_injection(text: str) -> bool:
+    """Return True when the supplied text matches a prompt-injection rule."""
+    return bool(scan(text))
+
+
+def looks_like_injection(text: str) -> bool:
+    """Return True when the supplied text matches a prompt-injection rule."""
+    return bool(scan(text))

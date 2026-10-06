@@ -17,7 +17,24 @@ from ..retrieval.hybrid import retrieve
 from ..security.ratelimit import allow
 
 app = FastAPI(title="OpsMind")
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"], allow_methods=["*"], allow_headers=["*"])
+import os
+
+CORS_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "CORS_ORIGINS",
+        "http://localhost:5173"
+    ).split(",")
+    if origin.strip()
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ORIGINS,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=True,
+)
 setup_observability(app)
 bearer = HTTPBearer()
 
@@ -60,7 +77,7 @@ def limited(user: User = Depends(current_user)) -> User:
 
 @app.get("/health")
 def health():
-    return {"ok": True}
+    return {"status": "ok"}
 
 
 @app.post("/auth/token")
