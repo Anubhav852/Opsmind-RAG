@@ -9,3 +9,4 @@ pytest-asyncio
 ruff
 PyJWT==2.10.1
 psycopg[binary]==3.2.10
+networkx==3.4.2
