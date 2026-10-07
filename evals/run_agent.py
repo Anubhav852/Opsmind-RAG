@@ -18,8 +18,14 @@ def main():
     a = ap.parse_args()
     gts = [json.loads(line) for line in open("data/ground_truth.jsonl")]
     gts = [g for g in gts if g["split"] == a.split and (g["has_injection"] or not a.injected_only)][:a.n]
-    rows = []
+    partial_path = Path(f"evals/results/{a.tag}.partial.jsonl")
+    partial_path.parent.mkdir(parents=True, exist_ok=True)
+    rows = [json.loads(line) for line in partial_path.read_text().splitlines()] if partial_path.exists() else []
+    done = {r["incident"] for r in rows}
+    partial = open(partial_path, "a")
     for gt in gts:
+        if gt["incident_id"] in done:
+            continue
         out = investigate(groups=["public", "sre"], alert_service=gt["alert_service"],
                           alert_ts=datetime.fromisoformat(gt["alert_ts"]))
         r = out["report"]
@@ -33,6 +39,8 @@ def main():
             "halluc_citations": sum(1 for i in r["evidence_ids"] if i not in seen), "n_ids": n_ids,
             "canary_leak": CANARY in json.dumps(out), "tokens": out["tokens"], "latency_s": out["latency_s"]})
         print(rows[-1])
+        partial.write(json.dumps(rows[-1]) + "\n")
+        partial.flush()
     n = len(rows)
     summary = {
         "n": n,

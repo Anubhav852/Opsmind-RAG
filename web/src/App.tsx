@@ -73,6 +73,8 @@ function App() {
   const [searchResults, setSearchResults] = useState<EventItem[]>([]);
   const [searching, setSearching] = useState(false);
   const [approved, setApproved] = useState(false);
+  const [recordedMeta, setRecordedMeta] = useState<any>(null);
+  const [status, setStatus] = useState<{ api: boolean; database: boolean; redis: boolean; llm: boolean } | null>(null);
 
   useEffect(() => {
     fetch(`${API}/auth/token`, {
@@ -91,6 +93,17 @@ function App() {
       .catch((e) => setError(e.message));
   }, []);
 
+  useEffect(() => {
+    const load = () =>
+      fetch(`${API}/status`)
+        .then((r) => (r.ok ? r.json() : Promise.reject()))
+        .then(setStatus)
+        .catch(() => setStatus({ api: false, database: false, redis: false, llm: false }));
+    load();
+    const t = setInterval(load, 30000);
+    return () => clearInterval(t);
+  }, []);
+
   async function investigate() {
     if (!token || !timestamp) return;
 
@@ -98,6 +111,7 @@ function App() {
     setError("");
     setOut(null);
     setApproved(false);
+    setRecordedMeta(null);
 
     try {
       const response = await fetch(`${API}/investigate`, {
@@ -225,18 +239,18 @@ function App() {
           <div className="sidebar-label">SYSTEM</div>
 
           <div className="system-item">
-            <span className="status-dot green" />
-            <span>API Online</span>
+            <Dot ok={status ? status.api : null} />
+            <span>{status === null ? "Checking API..." : status.api ? "API Online" : "API offline"}</span>
           </div>
 
           <div className="system-item">
-            <span className="status-dot green" />
-            <span>Retriever Ready</span>
+            <Dot ok={status ? status.database : null} />
+            <span>{status === null ? "Checking retriever..." : status.database ? "Retriever Ready" : "Retriever offline (no database)"}</span>
           </div>
 
           <div className="system-item">
-            <span className="status-dot green" />
-            <span>Verifier Ready</span>
+            <Dot ok={status ? status.llm : null} />
+            <span>{status === null ? "Checking verifier..." : status.llm ? "Verifier Ready" : "Verifier offline (no LLM)"}</span>
           </div>
         </div>
 
@@ -245,7 +259,7 @@ function App() {
             <ShieldCheck size={17} />
             <div>
               <strong>Secure Session</strong>
-              <span>JWT authenticated</span>
+              <span>{token ? "JWT authenticated" : "Not authenticated"}</span>
             </div>
           </div>
         </div>
@@ -345,11 +359,30 @@ function App() {
 
         {!out && !busy && (
           <EmptyState
-            onDemo={() => {
-              setService("web");
-              setTimestamp("2025-01-01T00:08:00Z");
+            onDemo={async () => {
+              setError("");
+              try {
+                const r = await fetch("/sample-investigation.json");
+                if (!r.ok) throw new Error("no sample");
+                const d = await r.json();
+                setService(d.recorded?.alert_service ?? "web");
+                setTimestamp(d.recorded?.alert_ts ?? "2025-01-01T00:08:00Z");
+                setOut(d);
+                setApproved(false);
+                setActiveTab("overview");
+                setRecordedMeta(d.recorded ?? {});
+              } catch {
+                setService("web");
+                setTimestamp("2025-01-01T00:08:00Z");
+              }
             }}
           />
+        )}
+
+        {out && recordedMeta && (
+          <div style={{ border: "1px solid #b45309", background: "rgba(180,83,9,0.15)", color: "#fcd34d", padding: "10px 14px", borderRadius: 10, margin: "12px 0", fontSize: 13 }}>
+            Recorded example, not a live run. Selected from {recordedMeta.tries_to_find_it ?? "?"} incident(s) tried; typical results are lower. See the README for measured success rates.
+          </div>
         )}
 
         {out && (
@@ -572,6 +605,15 @@ function Metric({
         <small>{detail}</small>
       </div>
     </div>
+  );
+}
+
+function Dot({ ok }: { ok: boolean | null }) {
+  return (
+    <span
+      className={"status-dot" + (ok ? " green" : "")}
+      style={ok ? undefined : { background: ok === null ? "#6b7280" : "#ef4444" }}
+    />
   );
 }
 

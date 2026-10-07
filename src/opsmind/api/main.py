@@ -125,3 +125,33 @@ def approve(inv_id: UUID, user: User = Depends(limited)):
         raise HTTPException(404, "not found or already decided")
     audit(user.sub, "approve", {"investigation": str(inv_id)})
     return {"status": "approved", "note": "Approval recorded. No production action is executed automatically."}
+
+
+@app.get("/status")
+def status():
+    """Real dependency checks for the UI. Booleans only, nothing sensitive."""
+
+    def check(fn) -> bool:
+        try:
+            fn()
+            return True
+        except Exception:
+            return False
+
+    def db():
+        import psycopg
+
+        with psycopg.connect(settings.database_url, connect_timeout=2) as c:
+            c.execute("SELECT 1")
+
+    def redis_():
+        import redis
+
+        redis.Redis.from_url(settings.redis_url, socket_connect_timeout=2, socket_timeout=2).ping()
+
+    def llm():
+        from ..llm import _client
+
+        _client.with_options(timeout=2.0, max_retries=0).models.list()
+
+    return {"api": True, "database": check(db), "redis": check(redis_), "llm": check(llm)}

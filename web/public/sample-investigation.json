@@ -1,0 +1,214 @@
+{
+  "status": "verified",
+  "report": {
+    "root_cause": "service:auth AND level:WARN",
+    "root_cause_service": "auth",
+    "evidence_ids": [
+      "24f46a80-25a4-5d38-9998-2b56bf85b037",
+      "bd029898-df52-5d2f-95a9-dda2a410a217"
+    ],
+    "confidence": 0.0,
+    "remediation": ""
+  },
+  "verdict": {
+    "approved": true,
+    "reasons": [],
+    "approved_baseline": true
+  },
+  "trace": [
+    {
+      "tool": "search_events",
+      "args": {
+        "minutes_before_alert": 5,
+        "query": "service:web OR service:web*",
+        "services": [
+          "web"
+        ]
+      },
+      "n_results": 1
+    },
+    {
+      "tool": "get_dependencies",
+      "args": {
+        "service": "web"
+      },
+      "n_results": 0
+    },
+    {
+      "tool": "list_recent_changes",
+      "args": {
+        "services": [
+          "web"
+        ]
+      },
+      "n_results": 10
+    },
+    {
+      "tool": "list_recent_changes",
+      "args": {
+        "services": [
+          "auth",
+          "checkout",
+          "postgres-main",
+          "redis-cache",
+          "web"
+        ]
+      },
+      "n_results": 10
+    },
+    {
+      "tool": "list_recent_changes",
+      "args": {
+        "services": [
+          "redis-cache"
+        ]
+      },
+      "n_results": 10
+    },
+    {
+      "tool": "search_events",
+      "args": {
+        "query": "service:auth AND level:ERROR OR service:auth AND level:WARN",
+        "minutes_before_alert": 15
+      },
+      "n_results": 8
+    }
+  ],
+  "timeline": [
+    {
+      "id": "0bca3555-bcd1-5aec-ac8f-9220fad8ecc5",
+      "ts": "2025-01-04T03:12:28.369708+00:00",
+      "service": "checkout",
+      "kind": "deploy",
+      "title": "Deploy checkout v7.13.1: add feature flag for dark mode"
+    },
+    {
+      "id": "2815f72f-ecf0-5db2-b9d4-42772a8811c6",
+      "ts": "2025-01-04T03:28:59.255360+00:00",
+      "service": "auth",
+      "kind": "commit",
+      "title": "auth: refactor request validation helpers"
+    },
+    {
+      "id": "68d548b9-ca84-557f-bde6-7414943063d7",
+      "ts": "2025-01-04T04:12:08.593351+00:00",
+      "service": "auth",
+      "kind": "deploy",
+      "title": "Deploy auth v7.13.1: add index on users table using CONCURRENTLY"
+    },
+    {
+      "id": "6b565a0b-dcfd-5edb-a319-010d4370eacf",
+      "ts": "2025-01-04T04:33:02.602028+00:00",
+      "service": "postgres-main",
+      "kind": "deploy",
+      "title": "Deploy postgres-main v7.13.1: update error page copy"
+    },
+    {
+      "id": "a62001d8-c6dd-5c6c-8654-7b3693d4dcbf",
+      "ts": "2025-01-04T04:37:06.533297+00:00",
+      "service": "web",
+      "kind": "commit",
+      "title": "web: refactor request validation helpers"
+    },
+    {
+      "id": "7f677675-70d5-520d-bab7-dd6d15df0041",
+      "ts": "2025-01-04T04:46:57.289904+00:00",
+      "service": "auth",
+      "kind": "commit",
+      "title": "auth: refactor request validation helpers"
+    },
+    {
+      "id": "d10472f4-f1bf-56de-ab80-aa8c54500763",
+      "ts": "2025-01-04T05:23:51.823508+00:00",
+      "service": "redis-cache",
+      "kind": "deploy",
+      "title": "Deploy redis-cache v7.13.1: add index on users table using CONCURRENTLY"
+    },
+    {
+      "id": "2b625b05-10f5-580b-873c-0cda78796cc5",
+      "ts": "2025-01-04T05:34:51.207753+00:00",
+      "service": "postgres-main",
+      "kind": "deploy",
+      "title": "Deploy postgres-main v7.13.1: bump logging library to 2.4.1"
+    },
+    {
+      "id": "b55472f4-8c92-5bc8-a6c3-ebc32bc8fab2",
+      "ts": "2025-01-04T05:43:02.461185+00:00",
+      "service": "checkout",
+      "kind": "deploy",
+      "title": "Deploy checkout v7.13.1: increase db.pool.max_size 50 -> 60"
+    },
+    {
+      "id": "2af6c2e1-5d84-5a07-900d-dcc1ac4317dd",
+      "ts": "2025-01-04T05:47:37.303559+00:00",
+      "service": "inventory",
+      "kind": "log",
+      "title": "WARN inventory retry budget exhausted for background sync"
+    },
+    {
+      "id": "c0edd4d5-be89-5871-9db2-57c73da2ef99",
+      "ts": "2025-01-04T05:51:58.504364+00:00",
+      "service": "inventory",
+      "kind": "log",
+      "title": "WARN inventory retry budget exhausted for background sync"
+    },
+    {
+      "id": "82724e98-5149-5a3d-a63b-3bcd3bef99f6",
+      "ts": "2025-01-04T05:58:03.954651+00:00",
+      "service": "inventory",
+      "kind": "log",
+      "title": "WARN inventory retry budget exhausted for background sync"
+    },
+    {
+      "id": "4806756e-c6f2-5aa6-9534-11ec9641fcb8",
+      "ts": "2025-01-04T05:58:38.847767+00:00",
+      "service": "inventory",
+      "kind": "log",
+      "title": "WARN inventory retry budget exhausted for background sync"
+    },
+    {
+      "id": "40092f2e-f8f6-521f-a380-f765a7361b1a",
+      "ts": "2025-01-04T05:58:58.365970+00:00",
+      "service": "inventory",
+      "kind": "log",
+      "title": "WARN inventory retry budget exhausted for background sync"
+    },
+    {
+      "id": "24f46a80-25a4-5d38-9998-2b56bf85b037",
+      "ts": "2025-01-04T06:00:00+00:00",
+      "service": "auth",
+      "kind": "config_change",
+      "title": "Feature flag 'bulk-prefetch' enabled for 100% of traffic on auth"
+    },
+    {
+      "id": "d415dfe8-98b1-5920-8c3a-73b77c610344",
+      "ts": "2025-01-04T06:03:45.092979+00:00",
+      "service": "inventory",
+      "kind": "log",
+      "title": "WARN inventory retry budget exhausted for background sync"
+    },
+    {
+      "id": "bd029898-df52-5d2f-95a9-dda2a410a217",
+      "ts": "2025-01-04T06:04:35.165171+00:00",
+      "service": "auth",
+      "kind": "log",
+      "title": "WARN slow query detected: 1240 queries in a single request (N+1 pattern)"
+    },
+    {
+      "id": "08f4fd45-c0f4-556f-ac4f-f7e00c7f04c2",
+      "ts": "2025-01-04T06:08:00+00:00",
+      "service": "web",
+      "kind": "alert",
+      "title": "ALERT web: p99 latency > 2s for 5m"
+    }
+  ],
+  "tokens": 14455,
+  "latency_s": 24.27,
+  "id": "recorded-demo",
+  "recorded": {
+    "incident": 13,
+    "alert_service": "web",
+    "alert_ts": "2025-01-04T06:08:00+00:00",
+    "tries_to_find_it": 5
+  }
+}
