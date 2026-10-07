@@ -74,6 +74,7 @@ function App() {
   const [searching, setSearching] = useState(false);
   const [approved, setApproved] = useState(false);
   const [recordedMeta, setRecordedMeta] = useState<any>(null);
+  const [showStatus, setShowStatus] = useState(false);
   const [status, setStatus] = useState<{ api: boolean; database: boolean; redis: boolean; llm: boolean } | null>(null);
 
   useEffect(() => {
@@ -277,12 +278,37 @@ function App() {
           </div>
 
           <div className="top-actions">
-            <div className="connection">
-              <span className="status-dot green" />
-              <span>Live</span>
-              <ChevronDown size={14} />
+            <div style={{ position: "relative" }}>
+              <div
+                className="connection"
+                role="button"
+                tabIndex={0}
+                aria-expanded={showStatus}
+                style={{ cursor: "pointer" }}
+                onClick={() => setShowStatus((v) => !v)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setShowStatus((v) => !v); }}
+              >
+                <Dot ok={status === null ? null : status.api && status.database && status.llm} />
+                <span>{status === null ? "Checking" : !status.api ? "Offline" : status.database && status.llm ? "Live" : "Demo mode"}</span>
+                <ChevronDown size={14} />
+              </div>
+              {showStatus && (
+                <div style={{ position: "absolute", right: 0, top: "115%", minWidth: 230, padding: 12, borderRadius: 10, border: "1px solid #243044", background: "#0b1220", fontSize: 13, zIndex: 20 }}>
+                  {([["API", status?.api], ["Database", status?.database], ["Redis", status?.redis], ["LLM", status?.llm]] as [string, boolean | undefined][]).map(([name, ok]) => (
+                    <div key={name} style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 0" }}>
+                      <Dot ok={ok === undefined ? null : ok} />
+                      <span>{name}: {ok === undefined ? "checking" : ok ? "up" : "down"}</span>
+                    </div>
+                  ))}
+                  <div style={{ marginTop: 8, opacity: 0.7 }}>
+                    {status && status.api && !(status.database && status.llm)
+                      ? "Demo mode: only the recorded example is available."
+                      : "Checked every 30 seconds."}
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="avatar">D</div>
+            <div className="avatar" title="Demo session" aria-label="Demo session">D</div>
           </div>
         </header>
 
@@ -568,9 +594,15 @@ function App() {
                       Approval recorded successfully. No production action was executed.
                     </div>
                   ) : (
-                    <button className="approve-btn" onClick={approve}>
+                    <button
+                      className="approve-btn"
+                      onClick={approve}
+                      disabled={!!recordedMeta}
+                      title={recordedMeta ? "Approval is disabled for recorded examples" : undefined}
+                      style={recordedMeta ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
+                    >
                       <Check size={16} />
-                      Approve Fix Suggestion
+                      {recordedMeta ? "Approval disabled (recorded example)" : "Approve Fix Suggestion"}
                     </button>
                   )}
                 </div>
