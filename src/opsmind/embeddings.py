@@ -1,13 +1,13 @@
 from functools import lru_cache
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
 
 from .config import settings
 
 
 @lru_cache(maxsize=1)
-def _model() -> SentenceTransformer:
+def _model():
+    from sentence_transformers import SentenceTransformer
     return SentenceTransformer(settings.embed_model)
 
 

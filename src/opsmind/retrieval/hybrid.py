@@ -2,7 +2,6 @@ import time
 from datetime import datetime, timezone
 from functools import lru_cache
 
-from sentence_transformers import CrossEncoder
 
 from ..config import settings
 from ..db import conn
@@ -40,7 +39,8 @@ _FAR_FUTURE = datetime(2100, 1, 1, tzinfo=timezone.utc)
 
 
 @lru_cache(maxsize=1)
-def _reranker() -> CrossEncoder:
+def _reranker():
+    from sentence_transformers import CrossEncoder
     return CrossEncoder(settings.rerank_model)
 
 
