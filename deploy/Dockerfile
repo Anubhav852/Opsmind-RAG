@@ -10,5 +10,4 @@ COPY --from=builder /install /usr/local
 USER app
 ENV HF_HOME=/home/app/.cache/huggingface
 EXPOSE 8000
-HEALTHCHECK CMD python -c "import urllib.request;urllib.request.urlopen('http://localhost:8000/health')"
-CMD ["uvicorn", "opsmind.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn opsmind.api.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
