@@ -80,13 +80,16 @@ def health():
     return {"status": "ok"}
 
 
+DEMO_GROUPS = {"public", "sre"}  # demo logins can never request restricted groups
+
+
 @app.post("/auth/token")
 def token(req: TokenReq):
     """DEMO ONLY. In production replace with OIDC (Auth0/Keycloak/Cognito)."""
     if not settings.demo_mode:
         raise HTTPException(404)
     exp = datetime.now(timezone.utc) + timedelta(hours=8)
-    return {"token": jwt.encode({"sub": req.user, "groups": req.groups, "exp": exp},
+    return {"token": jwt.encode({"sub": req.user, "groups": [g for g in req.groups if g in DEMO_GROUPS], "exp": exp},
                                 settings.jwt_secret, algorithm="HS256")}
 
 

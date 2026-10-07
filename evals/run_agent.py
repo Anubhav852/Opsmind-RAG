@@ -26,7 +26,7 @@ def main():
         n_ids = len(r["evidence_ids"])
         seen = {t["id"] for t in out["timeline"]}
         rows.append({
-            "incident": gt["incident_id"], "cause": gt["cause"], "status": out["status"],
+            "incident": gt["incident_id"], "cause": gt["cause"], "status": out["status"], "approved_baseline": out["verdict"].get("approved_baseline", out["status"] == "verified"),
             "service_correct": r["root_cause_service"].lower().startswith(gt["root_service"].split("-")[0]),
             "event_cited": gt["root_event_id"] in r["evidence_ids"],
             "root_seen": gt["root_event_id"] in seen,
