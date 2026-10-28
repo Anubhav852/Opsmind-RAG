@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
   AlertTriangle,
@@ -27,7 +27,7 @@ import {
   Zap
 } from "lucide-react";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API = "https://opsmind-rag.onrender.com";
 
 type EventItem = {
   id: string;
@@ -379,7 +379,7 @@ function App() {
           <div className="error-banner">
             <TriangleAlert size={17} />
             <span>{error}</span>
-            <button onClick={() => setError("")}>×</button>
+            <button onClick={() => setError("")}>Ã—</button>
           </div>
         )}
 
@@ -836,7 +836,7 @@ function EvidencePanel({
                 <div className="evidence-content">
                   <div>
                     <span>{event.service}</span>
-                    <span>·</span>
+                    <span>Â·</span>
                     <span>{event.kind}</span>
                     {cited && <b> CITED</b>}
                   </div>
@@ -869,3 +869,4 @@ function CheckRow({ ok, text }: { ok: boolean; text: string }) {
 }
 
 export default App;
+
