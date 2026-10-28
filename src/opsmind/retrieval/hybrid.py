@@ -55,7 +55,7 @@ def retrieve(query: str, *, tenant: str = "demo", groups: list[str], t0: datetim
         rows = c.execute(SQL, params).fetchall()
     for r in rows:
         r["id"] = str(r["id"])
-    if rerank and rows:
+    if rerank and rows and settings.rerank_enabled:
         scores = _reranker().predict([(query, f"{r['title']}. {r['body']}") for r in rows])
         rows = [r for _, r in sorted(zip(scores, rows, strict=True), key=lambda x: -x[0])]
     RETRIEVE_LAT.observe(time.perf_counter() - start)

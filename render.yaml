@@ -4,8 +4,8 @@ services:
     runtime: python
     plan: free
     rootDir: .
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn opsmind.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -r requirements-render.txt
+    startCommand: uvicorn opsmind.api.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION

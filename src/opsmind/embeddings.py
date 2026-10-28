@@ -7,10 +7,11 @@ from .config import settings
 
 @lru_cache(maxsize=1)
 def _model():
-    from sentence_transformers import SentenceTransformer
-    return SentenceTransformer(settings.embed_model)
+    from fastembed import TextEmbedding
+    return TextEmbedding(model_name=settings.embed_model)
 
 
 def embed(texts: list[str], batch_size: int = 64) -> np.ndarray:
-    return _model().encode(texts, batch_size=batch_size, normalize_embeddings=True,
-                           convert_to_numpy=True).astype(np.float32)
+    vecs = np.array(list(_model().embed(texts, batch_size=batch_size)), dtype=np.float32)
+    norms = np.linalg.norm(vecs, axis=1, keepdims=True)
+    return vecs / np.clip(norms, 1e-12, None)

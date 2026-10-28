@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     llm_model_cheap: str = "qwen2.5:3b-instruct"
     embed_model: str = "BAAI/bge-small-en-v1.5"
     rerank_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    rerank_enabled: bool = True
     jwt_secret: str = "change-me"
     demo_mode: bool = True
     rate_limit_per_min: int = 30
