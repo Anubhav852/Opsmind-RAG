@@ -2,7 +2,7 @@
 
 ### Open-source AI incident investigator: finds the root cause, cites the evidence, and proposes a fix. A human approves.
 
-**[▶ Live demo: opsmind-rag.vercel.app](https://opsmind-rag.vercel.app/)**  ·  [API](https://opsmind-api-qcdv.onrender.com/docs)  ·  [Architecture](#architecture)  ·  [Results](#measured-results)  ·  [Docs](#documentation)
+▶ **Live demo: [opsmind-rag.vercel.app](https://opsmind-rag.vercel.app)** · [API](https://opsmind-rag.onrender.com/docs) ·  [Architecture](#architecture)  ·  [Results](#measured-results)  ·  [Docs](#documentation)
 
 ![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
@@ -12,7 +12,8 @@
 ![Docker](https://img.shields.io/badge/Docker-K8s-2496ED?logo=docker&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-> **About the live demo.** The hosted site runs the UI and API only. It has no database or LLM attached, and the sidebar status dots say so honestly. **Load Demo Incident** shows a *recorded* investigation, clearly labelled as such. To run live investigations, use the [Quick start](#quick-start).
+> **About the live demo.** The hosted site runs real investigations on synthetic incidents: FastAPI on Render, Postgres + pgvector on Supabase, and a hosted LLM through OpenRouter. The API sleeps when idle, so the first request can take 30 to 70 seconds. The full stack (Kafka, Prometheus, Grafana, Jaeger, MLflow, local models) runs with `docker compose`. **Load Demo Incident** shows a recorded investigation as a fallback.
+To run live investigations, use the [Quick start](#quick-start).
 
 ![Incident timeline with cited evidence](docs/img/timeline.png)
 <sub>Correlated incident timeline: the events the agent cited as evidence are highlighted.</sub>
