@@ -114,20 +114,7 @@ sequenceDiagram
 
 > All numbers come from the scripts in `evals/` on **8 held-out synthetic incidents** with known ground truth. They show the pipeline runs end to end, not that it works in production. With n = 8, one incident moves a rate by 12.5 points.
 
-### Retrieval ablation
 
-`python -m evals.run_retrieval` (split = test, n = 8). Each row adds one idea.
-
-| Variant | R@1 | R@3 | R@5 | R@10 | MRR | p50 latency |
-|---|---|---|---|---|---|---|
-| A. vector only, no window | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 133 ms |
-| B. hybrid, no window | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 142 ms |
-| C. + time window | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 31 ms |
-| D. + graph filter | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 27 ms |
-| E. + cross-encoder rerank | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 168 ms |
-| F. two-hop (error logs, then cause) | 0.12 | 0.12 | 0.12 | 0.12 | 0.12 | 148 ms |
-
-Single-shot retrieval from the alert text alone did not surface the root cause in these runs. Spot check: the ground-truth event was absent from the top 10 even with the time window applied. A likely reason is that an alert such as "p99 latency > 2s" shares little vocabulary with a config change. Only the two-hop variant, which pulls error logs first and then searches for the cause, found it (1 of 8). This is why the project uses a multi-step agent instead of one-shot search.
 
 ### Agent evaluation
 
