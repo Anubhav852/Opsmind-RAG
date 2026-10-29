@@ -79,9 +79,7 @@ flowchart LR
     V -->|not supported| INS["Insufficient evidence"]
     REP --> H[Human approval]
     H --> AUD[(Immutable audit log)]
-
-    API -.metrics.-> PRO[Prometheus + Grafana]
-    API -.traces.-> JAE[Jaeger]
+    
 ```
 
 ### Request flow
