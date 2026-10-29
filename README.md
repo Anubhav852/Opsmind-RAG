@@ -182,9 +182,9 @@ pytest -m integration                           # needs the compose stack
 
 | Layer | Tools |
 |---|---|
-| Backend | Python 3.11, FastAPI, psycopg 3, aiokafka, PyJWT, Redis |
-| Data | Postgres 16, pgvector, tsvector full-text, Redpanda |
-| AI | Ollama (Qwen2.5 7B / 3B), sentence-transformers, cross-encoder rerank, PyTorch, Whisper, MLflow |
+| Backend | Python 3.11, FastAPI, psycopg 3, Redis |
+| Data | Postgres 16, pgvector, tsvector full-text |
+| AI | Ollama (Qwen2.5 7B / 3B) |
 | Frontend | React, TypeScript, Vite |
 | DevOps | Docker (multi-stage), GitHub Actions |
 | Deploy | Vercel (UI), Render (API) |
