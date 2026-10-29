@@ -200,7 +200,6 @@ pytest -m integration                           # needs the compose stack
 | AI | Ollama (Qwen2.5 7B / 3B), sentence-transformers, cross-encoder rerank, PyTorch, Whisper, MLflow |
 | Frontend | React, TypeScript, Vite |
 | DevOps | Docker (multi-stage), Kubernetes (Deployment, HPA, probes), Terraform skeleton, GitHub Actions |
-| Observability | OpenTelemetry, Prometheus, Grafana, Jaeger |
 | Deploy | Vercel (UI), Render (API) |
 
 ## Security model
