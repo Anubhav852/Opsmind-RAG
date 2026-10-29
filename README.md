@@ -199,7 +199,7 @@ pytest -m integration                           # needs the compose stack
 | Data | Postgres 16, pgvector, tsvector full-text, Redpanda |
 | AI | Ollama (Qwen2.5 7B / 3B), sentence-transformers, cross-encoder rerank, PyTorch, Whisper, MLflow |
 | Frontend | React, TypeScript, Vite |
-| DevOps | Docker (multi-stage), Kubernetes (Deployment, HPA, probes), Terraform skeleton, GitHub Actions |
+| DevOps | Docker (multi-stage), GitHub Actions |
 | Deploy | Vercel (UI), Render (API) |
 
 ## Security model
